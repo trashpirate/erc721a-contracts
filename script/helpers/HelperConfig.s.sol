@@ -1,9 +1,10 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import {Script, console} from "forge-std/Script.sol";
+import {Script} from "forge-std/Script.sol";
+import {console} from "forge-std/console.sol";
 import {ERC20Mock} from "@openzeppelin/contracts/mocks/token/ERC20Mock.sol";
-import {NFTContract} from "./../../src/NFTContract.sol";
+import {NFTContract} from "src/NFTContract.sol";
 
 contract HelperConfig is Script {
     struct NetworkConfig {
@@ -48,6 +49,23 @@ contract HelperConfig is Script {
         console.log("MAX_WALLET_SIZE: ", MAX_WALLET_SIZE);
         console.log("BATCH_LIMIT: ", BATCH_LIMIT);
 
+        console.log("{type: 'string', value: '%s'},", NAME);
+        console.log("{type: 'string', value: '%s'},", SYMBOL);
+        console.log("{type: 'string', value: '%s'},", BASE_URI);
+        console.log("{type: 'string', value: '%s'},", CONTRACT_URI);
+        console.log("{type: 'address', value: '%s'},", "TYR2TRfKCMQsqekiZUhVJFSmwSEK2wUTAA");
+        console.log("{type: 'address', value: '%s'},", "TYR2TRfKCMQsqekiZUhVJFSmwSEK2wUTAA");
+        console.log("{type: 'address', value: '%s'},", "TNEe78wmo2waTYF9Viu8AifzD3D99VXd7q");
+        console.log("{type: 'uint256', value: '%d'},", TOKEN_FEE);
+        console.log("{type: 'uint256', value: '%d'},", ETH_FEE);
+        console.log("{type: 'uint256', value: '%d'},", MAX_SUPPLY);
+        console.log("{type: 'uint256', value: '%d'},", MAX_WALLET_SIZE);
+        console.log("{type: 'uint256', value: '%d'},", BATCH_LIMIT);
+        console.log("{type: 'uint96', value: '%d'},", ROYALTY);
+
+        /**
+         * Example constructor input for Remix IDE: ["Touch Grassy","GRASSY","ipfs://bafybeidunoa4h3e5kvddib6gi53nhmbm32lzvcaxqccdforsiih2mwubky/","ipfs://bafkreiez4tklbxcv5e45s5zed5l2x2atmf7d26lfuo42xbbddnlppnzngm","TYR2TRfKCMQsqekiZUhVJFSmwSEK2wUTAA","TYR2TRfKCMQsqekiZUhVJFSmwSEK2wUTAA","TNEe78wmo2waTYF9Viu8AifzD3D99VXd7q",0,0,1000,100,10,500]
+         */
         if (block.chainid == 1 || block.chainid == 8453 || block.chainid == 123) {
             activeNetworkConfig = getMainnetConfig();
         } else if (block.chainid == 84532 || block.chainid == 11155111) {
@@ -55,6 +73,10 @@ contract HelperConfig is Script {
         } else {
             activeNetworkConfig = getAnvilConfig();
         }
+
+        bytes memory constructorArgs = abi.encode(activeNetworkConfig);
+
+        console.logBytes(constructorArgs);
     }
 
     function getActiveNetworkConfigStruct() public view returns (NetworkConfig memory) {

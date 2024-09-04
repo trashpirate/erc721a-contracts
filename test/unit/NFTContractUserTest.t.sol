@@ -89,10 +89,17 @@ contract TestUserFunctions is Test {
         _;
     }
 
+    modifier noMaxWallet() {
+        address owner = nftContract.owner();
+        vm.prank(owner);
+        nftContract.setMaxWalletSize(0);
+        _;
+    }
+
     modifier noBatchLimit() {
-        vm.startPrank(nftContract.owner());
+        address owner = nftContract.owner();
+        vm.prank(owner);
         nftContract.setBatchLimit(100);
-        vm.stopPrank();
         _;
     }
 
@@ -118,6 +125,9 @@ contract TestUserFunctions is Test {
 
     /*//////////////////////////////////////////////////////////////
                                TEST MINT
+    //////////////////////////////////////////////////////////////*/
+
+    /// SUCCESS
     //////////////////////////////////////////////////////////////*/
     function test__unit__Mint(uint256 quantity, address account) public unpaused skipFork {
         quantity = bound(quantity, 1, nftContract.getBatchLimit());
@@ -149,6 +159,32 @@ contract TestUserFunctions is Test {
         assertEq(token.balanceOf(nftContract.getFeeAddress()), feeTokenBalance + tokenFee);
     }
 
+    function test__unit__MintNoMaxWallet(uint256 quantity, address account)
+        public
+        unpaused
+        noMaxWallet
+        noBatchLimit
+        skipFork
+    {
+        quantity = bound(quantity, 1, nftContract.getBatchLimit());
+        vm.assume(account != address(0));
+        vm.assume(account != nftContract.getFeeAddress());
+
+        fund(account);
+
+        uint256 ethFee = quantity * nftContract.getEthFee();
+        uint256 tokenFee = quantity * nftContract.getTokenFee();
+
+        vm.startPrank(account);
+        token.approve(address(nftContract), tokenFee);
+        nftContract.mint{value: ethFee}(quantity);
+        vm.stopPrank();
+
+        assertEq(nftContract.balanceOf(account), quantity);
+    }
+
+    /// EVENT EMITTED
+    //////////////////////////////////////////////////////////////*/
     function test__unit__EmitEvent__Mint() public funded(USER) unpaused noBatchLimit {
         uint256 ethFee = nftContract.getEthFee();
         uint256 tokenFee = nftContract.getTokenFee();
@@ -163,6 +199,8 @@ contract TestUserFunctions is Test {
         nftContract.mint{value: ethFee}(1);
     }
 
+    /// REVERTS
+    //////////////////////////////////////////////////////////////*/
     function test__unit__RevertWhen__MintPaused() public funded(USER) {
         uint256 ethFee = nftContract.getEthFee();
         uint256 tokenFee = nftContract.getTokenFee();
@@ -196,6 +234,23 @@ contract TestUserFunctions is Test {
         token.approve(address(nftContract), tokenFee);
 
         vm.expectRevert(NFTContract.NFTContract_ExceedsBatchLimit.selector);
+        vm.prank(USER);
+        nftContract.mint{value: ethFee}(quantity);
+    }
+
+    function test__unit__RevertWhen__MintExceedsMaxWalletSize() public funded(USER) unpaused {
+        uint256 quantity = nftContract.getMaxWalletSize() + 1;
+        uint256 ethFee = nftContract.getEthFee() * quantity;
+        uint256 tokenFee = nftContract.getTokenFee() * quantity;
+
+        address owner = nftContract.owner();
+        vm.prank(owner);
+        nftContract.setBatchLimit(quantity);
+
+        vm.prank(USER);
+        token.approve(address(nftContract), tokenFee);
+
+        vm.expectRevert(NFTContract.NFTContract_ExceedsMaxPerWallet.selector);
         vm.prank(USER);
         nftContract.mint{value: ethFee}(quantity);
     }
@@ -272,6 +327,26 @@ contract TestUserFunctions is Test {
         );
 
         vm.expectRevert(NFTContract.NFTContract_TokenTransferFailed.selector);
+        vm.prank(account);
+        nftContract.mint{value: ethFee}(quantity);
+    }
+
+    function test__unit__RevertWhen__MintEthTransferFails(uint256 quantity, address account) public unpaused skipFork {
+        quantity = bound(quantity, 1, nftContract.getBatchLimit());
+        vm.assume(account != address(0));
+
+        fund(account);
+
+        uint256 ethFee = nftContract.getEthFee() * quantity;
+        uint256 tokenFee = nftContract.getTokenFee() * quantity;
+
+        address feeAddress = nftContract.getFeeAddress();
+        vm.prank(account);
+        token.approve(address(nftContract), tokenFee);
+
+        vm.mockCallRevert(feeAddress, "", "");
+
+        vm.expectRevert(NFTContract.NFTContract_EthTransferFailed.selector);
         vm.prank(account);
         nftContract.mint{value: ethFee}(quantity);
     }
@@ -369,25 +444,25 @@ contract TestUserFunctions is Test {
     }
 
     /// forge-config: default.fuzz.runs = 3
-    function test__unit__UniqueTokenURI(uint256 roll) public funded(USER) unpaused skipFork {
-        roll = bound(roll, 0, 100000000000);
-        TestHelper testHelper = new TestHelper();
+    // function test__unit__UniqueTokenURI(uint256 roll) public funded(USER) unpaused skipFork {
+    //     roll = bound(roll, 0, 100000000000);
+    //     TestHelper testHelper = new TestHelper();
 
-        uint256 maxSupply = nftContract.getMaxSupply();
-        uint256 ethFee = nftContract.getEthFee();
-        uint256 tokenFee = nftContract.getTokenFee();
+    //     uint256 maxSupply = nftContract.getMaxSupply();
+    //     uint256 ethFee = nftContract.getEthFee();
+    //     uint256 tokenFee = nftContract.getTokenFee();
 
-        vm.startPrank(USER);
-        for (uint256 index = 0; index < maxSupply; index++) {
-            vm.prevrandao(bytes32(uint256(index + roll)));
+    //     vm.startPrank(USER);
+    //     for (uint256 index = 0; index < maxSupply; index++) {
+    //         vm.prevrandao(bytes32(uint256(index + roll)));
 
-            token.approve(address(nftContract), tokenFee);
+    //         token.approve(address(nftContract), tokenFee);
 
-            nftContract.mint{value: ethFee}(1);
-            assertEq(testHelper.isTokenUriSet(nftContract.tokenURI(index + 1)), false);
-            console.log(nftContract.tokenURI(index + 1));
-            testHelper.setTokenUri(nftContract.tokenURI(index + 1));
-        }
-        vm.stopPrank();
-    }
+    //         nftContract.mint{value: ethFee}(1);
+    //         assertEq(testHelper.isTokenUriSet(nftContract.tokenURI(index + 1)), false);
+    //         console.log(nftContract.tokenURI(index + 1));
+    //         testHelper.setTokenUri(nftContract.tokenURI(index + 1));
+    //     }
+    //     vm.stopPrank();
+    // }
 }

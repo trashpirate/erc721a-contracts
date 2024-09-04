@@ -30,12 +30,14 @@ contract TestUserFunctions is Test {
     address USER = makeAddr("user");
     address NEW_FEE_ADDRESS = makeAddr("fee");
     uint256 constant NEW_FEE = 0.001 ether;
-    uint256 constant NEW_BATCH_LIMIT = 10;
+    uint256 constant NEW_BATCH_LIMIT = 20;
+    uint256 constant NEW_MAX_WALLET_SIZE = 20;
 
     /*//////////////////////////////////////////////////////////////
                                  EVENTS
     //////////////////////////////////////////////////////////////*/
     event BatchLimitSet(address indexed sender, uint256 batchLimit);
+    event MaxWalletSizeSet(address indexed sender, uint256 maxWalletSize);
     event BaseURIUpdated(address indexed sender, string indexed baseUri);
     event ContractURIUpdated(address indexed sender, string indexed contractUri);
     event RoyaltyUpdated(address indexed feeAddress, uint96 indexed royaltyNumerator);
@@ -132,7 +134,7 @@ contract TestUserFunctions is Test {
     }
 
     /*//////////////////////////////////////////////////////////////
-                           TEST SETBATCHLIMIT
+                           TEST SET BATCHLIMIT
     //////////////////////////////////////////////////////////////*/
     function test__unit__SetBatchLimit() public {
         address owner = nftContract.owner();
@@ -167,7 +169,34 @@ contract TestUserFunctions is Test {
     }
 
     /*//////////////////////////////////////////////////////////////
-                           TEST SETFEEADDRESS
+                        TEST SET MAXWALLETSIZE
+    //////////////////////////////////////////////////////////////*/
+    function test__unit__SetMaxWalletSize() public {
+        address owner = nftContract.owner();
+        vm.prank(owner);
+        nftContract.setMaxWalletSize(NEW_MAX_WALLET_SIZE);
+        assertEq(nftContract.getMaxWalletSize(), NEW_MAX_WALLET_SIZE);
+    }
+
+    function test__unit__EmitEvent__SetMaxWalletSize() public {
+        address owner = nftContract.owner();
+
+        vm.expectEmit(true, true, true, true);
+        emit MaxWalletSizeSet(owner, NEW_MAX_WALLET_SIZE);
+
+        vm.prank(owner);
+        nftContract.setMaxWalletSize(NEW_MAX_WALLET_SIZE);
+    }
+
+    function test__unit__RevertWhen__NotOwnerSetsMaxWalletSize() public {
+        vm.prank(USER);
+
+        vm.expectRevert(abi.encodeWithSelector(Ownable.OwnableUnauthorizedAccount.selector, USER));
+        nftContract.setMaxWalletSize(NEW_MAX_WALLET_SIZE);
+    }
+
+    /*//////////////////////////////////////////////////////////////
+                           TEST SET FEEADDRESS
     //////////////////////////////////////////////////////////////*/
     function test__unit__SetEthFeeAddress() public {
         address owner = nftContract.owner();
@@ -202,7 +231,7 @@ contract TestUserFunctions is Test {
     }
 
     /*//////////////////////////////////////////////////////////////
-                             TEST SETETHFEE
+                             TEST SET ETHFEE
     //////////////////////////////////////////////////////////////*/
     function test__unit__SetEthFee() public {
         address owner = nftContract.owner();
@@ -229,7 +258,7 @@ contract TestUserFunctions is Test {
     }
 
     /*//////////////////////////////////////////////////////////////
-                            TEST SETTOKENFEE
+                            TEST SET TOKENFEE
     //////////////////////////////////////////////////////////////*/
     function test__unit__SetTokenFee() public {
         address owner = nftContract.owner();
@@ -256,7 +285,7 @@ contract TestUserFunctions is Test {
     }
 
     /*//////////////////////////////////////////////////////////////
-                            TEST WITHDRAWETH
+                            TEST WITHDRAW ETH
     //////////////////////////////////////////////////////////////*/
     function test__unit__WithdrawETH() public funded(USER) {
         deal(address(nftContract), 1 ether);
@@ -300,7 +329,7 @@ contract TestUserFunctions is Test {
     }
 
     /*//////////////////////////////////////////////////////////////
-                          TEST WITHDRAWTOKENS
+                          TEST WITHDRAW TOKENS
     //////////////////////////////////////////////////////////////*/
     function test__unit__WithdrawTokens() public funded(USER) {
         token.mint(address(nftContract), 1000 ether);
@@ -346,7 +375,7 @@ contract TestUserFunctions is Test {
     }
 
     /*//////////////////////////////////////////////////////////////
-                          TEST SETCONTRACTURI
+                          TEST SET CONTRACTURI
     //////////////////////////////////////////////////////////////*/
     function test__unit__SetContractURI() public {
         address owner = nftContract.owner();
@@ -378,7 +407,7 @@ contract TestUserFunctions is Test {
     }
 
     /*//////////////////////////////////////////////////////////////
-                            TEST SETBASEURI
+                            TEST SET BASEURI
     //////////////////////////////////////////////////////////////*/
     function test__unit__SetBaseURI() public {
         address owner = nftContract.owner();
@@ -410,7 +439,7 @@ contract TestUserFunctions is Test {
     }
 
     /*//////////////////////////////////////////////////////////////
-                            TEST SETROYALTY
+                            TEST SET ROYALTY
     //////////////////////////////////////////////////////////////*/
     function test__unit__SetRoyalty() public {
         address owner = nftContract.owner();

@@ -60,6 +60,7 @@ contract NFTContract is ERC721A, ERC2981, ERC721ABurnable, Ownable {
     event EthFeeSet(address indexed sender, uint256 indexed fee);
     event FeeAddressSet(address indexed sender, address feeAddress);
     event BatchLimitSet(address indexed sender, uint256 batchLimit);
+    event MaxWalletSizeSet(address indexed sender, uint256 maxWalletSize);
     event BaseURIUpdated(address indexed sender, string indexed baseUri);
     event ContractURIUpdated(address indexed sender, string indexed contractUri);
     event RoyaltyUpdated(address indexed feeAddress, uint96 indexed royaltyNumerator);
@@ -141,6 +142,7 @@ contract NFTContract is ERC721A, ERC2981, ERC721ABurnable, Ownable {
 
         if (quantity == 0) revert NFTContract_InsufficientMintQuantity();
         if (quantity > s_batchLimit) revert NFTContract_ExceedsBatchLimit();
+        if (s_maxWalletSize > 0 && quantity > s_maxWalletSize) revert NFTContract_ExceedsMaxPerWallet();
         if (totalSupply() + quantity > i_maxSupply) {
             revert NFTContract_ExceedsMaxSupply();
         }
@@ -148,10 +150,11 @@ contract NFTContract is ERC721A, ERC2981, ERC721ABurnable, Ownable {
         // mint nfts
         uint256 tokenId = _nextTokenId();
 
-        for (uint256 i = 0; i < quantity; i++) {
+        for (uint256 i = 0; i < quantity;) {
             _setTokenURI(tokenId);
             unchecked {
                 tokenId++;
+                i++;
             }
         }
 
@@ -207,6 +210,13 @@ contract NFTContract is ERC721A, ERC2981, ERC721ABurnable, Ownable {
         if (batchLimit > 100) revert NFTContract_BatchLimitTooHigh();
         s_batchLimit = batchLimit;
         emit BatchLimitSet(msg.sender, batchLimit);
+    }
+
+    /// @notice Sets max wallet size - maximum number of nfts that can be minted per wallet (only owner)
+    /// @param maxWalletSize Maximum number of nfts that can be minted per wallet
+    function setMaxWalletSize(uint256 maxWalletSize) external onlyOwner {
+        s_maxWalletSize = maxWalletSize;
+        emit MaxWalletSizeSet(msg.sender, maxWalletSize);
     }
 
     /// @notice Withdraw tokens from contract (only owner)
@@ -309,8 +319,7 @@ contract NFTContract is ERC721A, ERC2981, ERC721ABurnable, Ownable {
     /// @dev adapted code from openzeppelin ERC721URIStorage
     /// @param tokenId tokenId of nft
     function _setTokenURI(uint256 tokenId) private {
-        uint256 tokenUri = _randomTokenURI();
-        s_tokenURINumber[tokenId] = tokenUri;
+        s_tokenURINumber[tokenId] = _randomTokenURI();
         emit MetadataUpdated(tokenId);
     }
 
@@ -343,7 +352,7 @@ contract NFTContract is ERC721A, ERC2981, ERC721ABurnable, Ownable {
         uint256 randIdx = uint256(keccak256(abi.encodePacked(block.prevrandao, s_nonce))) % numAvailableURIs;
 
         // get new and nonexisting random id
-        randomTokenURI = (s_ids[randIdx] != 0) ? s_ids[randIdx] : randIdx;
+        randomTokenURI = (s_ids[randIdx] > 0) ? s_ids[randIdx] : randIdx;
 
         // update helper array
         s_ids[randIdx] = (s_ids[numAvailableURIs - 1] == 0) ? numAvailableURIs - 1 : s_ids[numAvailableURIs - 1];
