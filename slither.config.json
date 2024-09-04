@@ -4,6 +4,7 @@
         "ds-test/=lib/forge-std/lib/ds-test/src/",
         "forge-std/=lib/forge-std/src/",
         "foundry-devops/=lib/foundry-devops/",
+        "@erc721a/contracts/=lib/ERC721A/contracts/",
         "@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/"
     ]
 }
