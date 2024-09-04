@@ -4500,7 +4500,8 @@ contract NFTContract is ERC721A, ERC2981, ERC721ABurnable, Ownable {
     /// @notice generates a random tokenURI
     function _randomTokenURI() private returns (uint256 randomTokenURI) {
         uint256 numAvailableURIs = s_ids.length;
-        uint256 randIdx = uint256(keccak256(abi.encodePacked(block.prevrandao, s_nonce))) % numAvailableURIs;
+
+        uint256 randIdx = uint256(keccak256(abi.encodePacked(msg.sender, block.timestamp, s_nonce))) % numAvailableURIs;
 
         // get new and nonexisting random id
         randomTokenURI = (s_ids[randIdx] > 0) ? s_ids[randIdx] : randIdx;
