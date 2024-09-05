@@ -57,6 +57,6 @@ contract-call:
 
 # Tron deployment
 flatten:
-	@forge flatten src/Contract.sol --output src/ContractTron.sol
+	@forge flatten src/NFTContract.sol --output src/NFTContractTron.sol
 
 -include ${FCT_PLUGIN_PATH}/makefile-external

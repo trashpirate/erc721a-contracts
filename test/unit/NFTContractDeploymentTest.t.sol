@@ -37,19 +37,17 @@ contract NFTContractDeploymentTest is Test {
                           TEST   INITIALIZATION
     //////////////////////////////////////////////////////////////*/
     function test__unit__Initialization() public {
-        assertEq(nftContract.getMaxSupply(), networkConfig.args.maxSupply);
+        assertEq(nftContract.getMaxSupply(), 1000);
 
-        assertEq(nftContract.getFeeAddress(), networkConfig.args.feeAddress);
-        assertEq(nftContract.getBaseURI(), networkConfig.args.baseURI);
-        assertEq(nftContract.contractURI(), networkConfig.args.contractURI);
+        assertEq(nftContract.getFeeAddress(), networkConfig.feeAddress);
+        assertEq(nftContract.getFeeToken(), networkConfig.feeToken);
+        assertEq(nftContract.owner(), networkConfig.initialOwner);
 
-        assertEq(nftContract.getFeeToken(), networkConfig.args.tokenAddress);
+        assertEq(nftContract.getEthFee(), 0.001 ether);
+        assertEq(nftContract.getTokenFee(), 1000 ether);
 
-        assertEq(nftContract.getEthFee(), networkConfig.args.ethFee);
-        assertEq(nftContract.getTokenFee(), networkConfig.args.tokenFee);
-
-        assertEq(nftContract.getMaxWalletSize(), networkConfig.args.maxWalletSize);
-        assertEq(nftContract.getBatchLimit(), networkConfig.args.batchLimit);
+        assertEq(nftContract.getMaxWalletSize(), 25);
+        assertEq(nftContract.getBatchLimit(), 10);
 
         assertEq(nftContract.isPaused(), true);
 
@@ -66,28 +64,18 @@ contract NFTContractDeploymentTest is Test {
     function test__unit__InitialRoyalties() public view {
         uint256 salePrice = 100;
         (address feeAddress, uint256 royaltyAmount) = nftContract.royaltyInfo(1, salePrice);
-        assertEq(feeAddress, networkConfig.args.feeAddress);
-        assertEq(royaltyAmount, (networkConfig.args.royaltyNumerator * 100) / 10000);
+        assertEq(feeAddress, networkConfig.feeAddress);
+        assertEq(royaltyAmount, (500 * 100) / 10000);
     }
 
     /*//////////////////////////////////////////////////////////////
                             TEST DEPLOYMENT
     //////////////////////////////////////////////////////////////*/
-    function test__unit__RevertWhen__NoBaseURI() public {
-        NFTContract.ConstructorArguments memory args = networkConfig.args;
-
-        args.baseURI = "";
-
-        vm.expectRevert(NFTContract.NFTContract_NoBaseURI.selector);
-        new NFTContract(args);
-    }
 
     function test__unit__RevertWhen__ZeroFeeAddress() public {
-        NFTContract.ConstructorArguments memory args = networkConfig.args;
-
-        args.feeAddress = address(0);
+        (address feeToken,, address initialOwner) = helperConfig.activeNetworkConfig();
 
         vm.expectRevert(NFTContract.NFTContract_FeeAddressIsZeroAddress.selector);
-        new NFTContract(args);
+        new NFTContract(feeToken, address(0), initialOwner);
     }
 }

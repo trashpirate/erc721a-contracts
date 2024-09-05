@@ -420,7 +420,7 @@ contract TestUserFunctions is Test {
         nftContract.mint{value: ethFee}(1);
 
         assertEq(nftContract.balanceOf(USER), 1);
-        assertEq(nftContract.tokenURI(1), string.concat(networkConfig.args.baseURI, "117"));
+        assertEq(nftContract.tokenURI(1), string.concat(nftContract.getBaseURI(), "532"));
     }
 
     function test__unit__batchTokenURI() public funded(USER) unpaused {

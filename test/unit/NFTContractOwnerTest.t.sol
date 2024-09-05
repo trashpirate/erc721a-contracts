@@ -85,7 +85,7 @@ contract TestUserFunctions is Test {
 
         networkConfig = helperConfig.getActiveNetworkConfigStruct();
 
-        token = ERC20Mock(networkConfig.args.tokenAddress);
+        token = ERC20Mock(networkConfig.feeToken);
     }
 
     /*//////////////////////////////////////////////////////////////

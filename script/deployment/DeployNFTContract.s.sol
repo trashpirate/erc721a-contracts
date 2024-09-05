@@ -10,16 +10,16 @@ contract DeployNFTContract is Script {
 
     function run() external returns (NFTContract, HelperConfig) {
         helperConfig = new HelperConfig();
-        NFTContract.ConstructorArguments memory args = helperConfig.activeNetworkConfig();
+        (address feeToken, address feeAddress, address initialOwner) = helperConfig.activeNetworkConfig();
 
-        console.log("initial owner: ", args.owner);
-        console.log("base uri: ", args.baseURI);
-        console.log("fee address: ", args.feeAddress);
+        console.log("fee token: ", feeToken);
+        console.log("fee address: ", feeAddress);
+        console.log("initial owner: ", initialOwner);
 
         // after broadcast is real transaction, before just simulation
         vm.startBroadcast();
         uint256 gasLeft = gasleft();
-        NFTContract nfts = new NFTContract(args);
+        NFTContract nfts = new NFTContract(feeToken, feeAddress, initialOwner);
         console.log("Deployment gas: ", gasLeft - gasleft());
         vm.stopBroadcast();
         return (nfts, helperConfig);

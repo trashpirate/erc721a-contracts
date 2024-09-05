@@ -4165,38 +4165,22 @@ library Strings {
 /// @dev Inherits from ERC721A and ERC721ABurnable and openzeppelin Ownable
 contract NFTContract is ERC721A, ERC2981, ERC721ABurnable, Ownable {
     /*//////////////////////////////////////////////////////////////
-                                 TYPES
-    //////////////////////////////////////////////////////////////*/
-    struct ConstructorArguments {
-        string name;
-        string symbol;
-        string baseURI;
-        string contractURI;
-        address owner;
-        address feeAddress;
-        address tokenAddress;
-        uint256 tokenFee;
-        uint256 ethFee;
-        uint256 maxSupply;
-        uint256 maxWalletSize;
-        uint256 batchLimit;
-        uint96 royaltyNumerator;
-    }
-
-    /*//////////////////////////////////////////////////////////////
                             STATE VARIABLES
     //////////////////////////////////////////////////////////////*/
-    uint256 private immutable i_maxSupply;
+    string private constant NAME = "NFT Test";
+    string private constant SYMBOL = "TEST";
+    uint256 private constant MAX_SUPPLY = 1000;
+
     IERC20 private immutable i_feeToken;
 
     address private s_feeAddress;
-    uint256 private s_tokenFee;
-    uint256 private s_ethFee;
-    uint256 private s_batchLimit;
-    uint256 private s_maxWalletSize;
+    uint256 private s_tokenFee = 1000 ether;
+    uint256 private s_ethFee = 0.001 ether;
+    uint256 private s_batchLimit = 10;
+    uint256 private s_maxWalletSize = 25;
 
-    string private s_baseURI;
-    string private s_contractURI;
+    string private s_baseURI = "ipfs://bafybeidunoa4h3e5kvddib6gi53nhmbm32lzvcaxqccdforsiih2mwubky/";
+    string private s_contractURI = "ipfs://bafkreiez4tklbxcv5e45s5zed5l2x2atmf7d26lfuo42xbbddnlppnzngm";
     bool private s_paused;
 
     mapping(uint256 tokenId => uint256) private s_tokenURINumber;
@@ -4239,45 +4223,26 @@ contract NFTContract is ERC721A, ERC2981, ERC721ABurnable, Ownable {
     //////////////////////////////////////////////////////////////*/
 
     /// @notice Constructor
-    /// @param args constructor arguments:
-    ///                     name: collection name
-    ///                     symbol: nft symbol
-    ///                     owner: contract owner
-    ///                     ethFee: minting fee in native coin
-    ///                     token: minting fee in erc20
-    ///                     tokenAddress: erc20 token address used for fees
-    ///                     feeAddress: address for fees
-    ///                     baseURI: base uri
-    ///                     contractURI: contract uri
-    ///                     maxSupply: maximum nfts mintable
-    ///                     royaltyNumerator: basis points for royalty fees
-    constructor(ConstructorArguments memory args) ERC721A(args.name, args.symbol) Ownable(msg.sender) {
-        if (args.feeAddress == address(0)) {
+    /// @param feeToken erc20 token address used for fees
+    /// @param feeAddress address for fees
+    /// @param initialOwner initial owner of contract
+    constructor(address feeToken, address feeAddress, address initialOwner) ERC721A(NAME, SYMBOL) Ownable(msg.sender) {
+        if (feeAddress == address(0)) {
             revert NFTContract_FeeAddressIsZeroAddress();
         }
-        if (bytes(args.baseURI).length == 0) revert NFTContract_NoBaseURI();
 
-        i_feeToken = IERC20(args.tokenAddress);
-        i_maxSupply = args.maxSupply;
-
-        s_tokenFee = args.tokenFee;
-        s_ethFee = args.ethFee;
-        s_feeAddress = args.feeAddress;
-        s_batchLimit = args.batchLimit;
-        s_maxWalletSize = args.maxWalletSize;
-
+        i_feeToken = IERC20(feeToken);
+        s_feeAddress = feeAddress;
         s_paused = true;
 
         // initialize randomization
-        s_ids = new uint256[](args.maxSupply);
+        s_ids = new uint256[](MAX_SUPPLY);
 
-        // initialize metadata
-        _setBaseURI(args.baseURI);
-        _setContractURI(args.contractURI);
-        _setDefaultRoyalty(args.feeAddress, args.royaltyNumerator);
+        // initialize royalties
+        _setDefaultRoyalty(feeAddress, 500);
 
         // set ownership
-        if (args.owner != msg.sender) _transferOwnership(args.owner);
+        if (initialOwner != msg.sender) _transferOwnership(initialOwner);
     }
 
     receive() external payable {}
@@ -4294,7 +4259,7 @@ contract NFTContract is ERC721A, ERC2981, ERC721ABurnable, Ownable {
         if (quantity == 0) revert NFTContract_InsufficientMintQuantity();
         if (quantity > s_batchLimit) revert NFTContract_ExceedsBatchLimit();
         if (s_maxWalletSize > 0 && quantity > s_maxWalletSize) revert NFTContract_ExceedsMaxPerWallet();
-        if (totalSupply() + quantity > i_maxSupply) {
+        if (totalSupply() + quantity > MAX_SUPPLY) {
             revert NFTContract_ExceedsMaxSupply();
         }
 
@@ -4520,8 +4485,8 @@ contract NFTContract is ERC721A, ERC2981, ERC721ABurnable, Ownable {
     //////////////////////////////////////////////////////////////*/
 
     /// @notice Returns maximum supply
-    function getMaxSupply() external view returns (uint256) {
-        return i_maxSupply;
+    function getMaxSupply() external pure returns (uint256) {
+        return MAX_SUPPLY;
     }
 
     /// @notice Returns minting fee in ETH
