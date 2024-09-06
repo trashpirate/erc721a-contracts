@@ -4,7 +4,8 @@ pragma solidity ^0.8.20;
 import {Script} from "forge-std/Script.sol";
 import {console} from "forge-std/console.sol";
 import {ERC20Mock} from "@openzeppelin/contracts/mocks/token/ERC20Mock.sol";
-import {NFTContract} from "src/NFTContract.sol";
+
+import {NFTContract} from "src/onchain-randomized/NFTContract.sol";
 
 contract HelperConfig is Script {
     struct NetworkConfig {
@@ -57,9 +58,8 @@ contract HelperConfig is Script {
             activeNetworkConfig = getAnvilConfig();
         }
 
-        bytes memory constructorArgs = abi.encode(activeNetworkConfig);
-
-        console.logBytes(constructorArgs);
+        // bytes memory constructorArgs = abi.encode(activeNetworkConfig);
+        // console.logBytes(constructorArgs);
     }
 
     function getActiveNetworkConfigStruct() public view returns (NetworkConfig memory) {

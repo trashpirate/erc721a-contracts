@@ -6,9 +6,9 @@ import {Test, console} from "forge-std/Test.sol";
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {ERC20Mock} from "@openzeppelin/contracts/mocks/token/ERC20Mock.sol";
 
-import {DeployNFTContract} from "./../../script/deployment/DeployNFTContract.s.sol";
-import {NFTContract} from "./../../src/NFTContract.sol";
-import {HelperConfig} from "../../script/helpers/HelperConfig.s.sol";
+import {DeployNFTContract} from "script/onchain-randomized/deployment/DeployNFTContract.s.sol";
+import {NFTContract} from "src/onchain-randomized/NFTContract.sol";
+import {HelperConfig} from "script/onchain-randomized/helpers/HelperConfig.s.sol";
 
 contract TestUserFunctions is Test {
     /*//////////////////////////////////////////////////////////////

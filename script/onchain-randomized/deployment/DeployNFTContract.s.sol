@@ -2,8 +2,8 @@
 pragma solidity ^0.8.20;
 
 import {Script, console} from "forge-std/Script.sol";
-import {NFTContract} from "../../src/NFTContract.sol";
-import {HelperConfig} from "../helpers/HelperConfig.s.sol";
+import {NFTContract} from "src/onchain-randomized/NFTContract.sol";
+import {HelperConfig} from "script/onchain-randomized/helpers/HelperConfig.s.sol";
 
 contract DeployNFTContract is Script {
     HelperConfig public helperConfig;

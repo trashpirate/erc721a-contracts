@@ -3,7 +3,8 @@ pragma solidity ^0.8.20;
 
 import {Script, console} from "forge-std/Script.sol";
 import {DevOpsTools} from "foundry-devops/src/DevOpsTools.sol";
-import {NFTContract} from "src/NFTContract.sol";
+
+import {NFTContract} from "src/onchain-randomized/NFTContract.sol";
 
 contract MintNft is Script {
     function mintNft(address recentContractAddress) public {

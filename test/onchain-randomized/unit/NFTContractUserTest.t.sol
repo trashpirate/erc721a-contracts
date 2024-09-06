@@ -8,10 +8,10 @@ import {IERC20Errors} from "@openzeppelin/contracts/interfaces/draft-IERC6093.so
 import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
 import {ERC20Mock} from "@openzeppelin/contracts/mocks/token/ERC20Mock.sol";
 
-import {StringToNumber} from "../utils/Utils.sol";
-import {DeployNFTContract} from "./../../script/deployment/DeployNFTContract.s.sol";
-import {NFTContract} from "./../../src/NFTContract.sol";
-import {HelperConfig} from "../../script/helpers/HelperConfig.s.sol";
+import {StringToNumber} from "test/utils/Utils.sol";
+import {DeployNFTContract} from "script/onchain-randomized/deployment/DeployNFTContract.s.sol";
+import {NFTContract} from "src/onchain-randomized/NFTContract.sol";
+import {HelperConfig} from "script/onchain-randomized/helpers/HelperConfig.s.sol";
 
 contract TestHelper {
     mapping(string => bool) public tokenUris;
@@ -420,7 +420,7 @@ contract TestUserFunctions is Test {
         nftContract.mint{value: ethFee}(1);
 
         assertEq(nftContract.balanceOf(USER), 1);
-        assertEq(nftContract.tokenURI(1), string.concat(networkConfig.args.baseURI, "117"));
+        assertEq(nftContract.tokenURI(1), string.concat(networkConfig.args.baseURI, "127"));
     }
 
     function test__unit__batchTokenURI() public funded(USER) unpaused {

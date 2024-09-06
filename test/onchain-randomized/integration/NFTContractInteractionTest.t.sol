@@ -3,11 +3,18 @@
 pragma solidity ^0.8.20;
 
 import {Test, console} from "forge-std/Test.sol";
-import {NFTContract} from "src/NFTContract.sol";
 import {ERC20Mock} from "@openzeppelin/contracts/mocks/token/ERC20Mock.sol";
-import {HelperConfig} from "script/helpers/HelperConfig.s.sol";
-import {DeployNFTContract} from "script/deployment/DeployNFTContract.s.sol";
-import {MintNft, BatchMint, TransferNft, ApproveNft, BurnNft} from "script/interactions/Interactions.s.sol";
+
+import {NFTContract} from "src/onchain-randomized/NFTContract.sol";
+import {HelperConfig} from "script/onchain-randomized/helpers/HelperConfig.s.sol";
+import {DeployNFTContract} from "script/onchain-randomized/deployment/DeployNFTContract.s.sol";
+import {
+    MintNft,
+    BatchMint,
+    TransferNft,
+    ApproveNft,
+    BurnNft
+} from "script/onchain-randomized/interactions/Interactions.s.sol";
 
 contract TestInteractions is Test {
     /*//////////////////////////////////////////////////////////////
