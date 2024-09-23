@@ -2,24 +2,24 @@
 pragma solidity ^0.8.20;
 
 import {Script, console} from "forge-std/Script.sol";
-import {NFTContract} from "src/onchain-randomized/NFTContract.sol";
-import {HelperConfig} from "script/onchain-randomized/helpers/HelperConfig.s.sol";
+import {NFTPausable} from "src/NFTPausable.sol";
+import {HelperConfig} from "script/helpers/HelperConfig.s.sol";
 
-contract DeployNFTContract is Script {
+contract DeployNFTPausable is Script {
     HelperConfig public helperConfig;
 
-    function run() external returns (NFTContract, HelperConfig) {
+    function run() external returns (NFTPausable, HelperConfig) {
         helperConfig = new HelperConfig();
-        NFTContract.ConstructorArguments memory args = helperConfig.activeNetworkConfig();
+        HelperConfig.ConstructorArguments memory args = helperConfig.activeNetworkConfig();
 
         console.log("initial owner: ", args.owner);
         console.log("base uri: ", args.baseURI);
-        console.log("fee address: ", args.feeAddress);
 
         // after broadcast is real transaction, before just simulation
         vm.startBroadcast();
         uint256 gasLeft = gasleft();
-        NFTContract nfts = new NFTContract(args);
+        NFTPausable nfts =
+            new NFTPausable(args.name, args.symbol, args.baseURI, args.contractURI, args.owner, args.maxSupply);
         console.log("Deployment gas: ", gasLeft - gasleft());
         vm.stopBroadcast();
         return (nfts, helperConfig);

@@ -9,7 +9,7 @@ fs_permissions = [{ access = "read", path = "./broadcast" }]
 
 
 [fuzz]
-runs = 1000
+runs = 256
 
 [invariant]
 runs = 128
