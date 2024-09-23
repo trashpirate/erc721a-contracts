@@ -36,8 +36,22 @@ abstract contract Whitelist {
     constructor() {}
 
     /*//////////////////////////////////////////////////////////////
+                           EXTERNAL FUNCTIONS
+    //////////////////////////////////////////////////////////////*/
+
+    /// @notice Sets the merkle root
+    /// @param merkleRoot New merkle root
+    function setMerkleRoot(bytes32 merkleRoot) external {
+        s_merkleRoot = merkleRoot;
+    }
+
+    /*//////////////////////////////////////////////////////////////
                            INTERNAL FUNCTIONS
     //////////////////////////////////////////////////////////////*/
+
+    /// @notice Verifies the claimer's address
+    /// @param account Account to verify
+    /// @param merkleProof Proof of the claimer's address
     function _verifyClaimer(address account, bytes32[] calldata merkleProof) internal view {
         bytes32 leaf = keccak256(bytes.concat(keccak256(abi.encode(account))));
 
@@ -46,6 +60,9 @@ abstract contract Whitelist {
         }
     }
 
+    /// @notice Sets the claim status of an account
+    /// @param account Account to set the claim status for
+    /// @param claimed Claim status
     function _hasClaimed(address account, bool claimed) internal {
         s_hasClaimed[account] = claimed;
     }
@@ -53,7 +70,9 @@ abstract contract Whitelist {
     /*//////////////////////////////////////////////////////////////
                                 GETTERS
     //////////////////////////////////////////////////////////////*/
-    function setMerkleRoot(bytes32 merkleRoot) external {
-        s_merkleRoot = merkleRoot;
+
+    /// @notice Returns the merkle root
+    function getMerkleRoot() external view returns (bytes32) {
+        return s_merkleRoot;
     }
 }
