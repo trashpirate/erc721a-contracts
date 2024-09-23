@@ -1,0 +1,15 @@
+{
+  "name": "merkle-tree-generator",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Trashpirate",
+  "license": "MIT",
+  "description": "Script to genenerate merkle trees from a list of addresses",
+  "dependencies": {
+    "@openzeppelin/merkle-tree": "^1.0.7"
+  },
+  "type": "module"
+}
