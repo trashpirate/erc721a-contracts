@@ -7,11 +7,22 @@
 
 [![Website: nadinaoates.com](https://img.shields.io/badge/Portfolio-00e0a7?style=for-the-badge&logo=Website)](https://nadinaoates.com)
 [![LinkedIn: nadinaoates](https://img.shields.io/badge/LinkedIn-0a66c2?style=for-the-badge&logo=LinkedIn&logoColor=f5f5f5)](https://linkedin.com/in/nadinaoates)
-[![Twitter: N0_crypto](https://img.shields.io/badge/@N0_crypto-black?style=for-the-badge&logo=X)](https://twitter.com/N0_crypto)
+[![Twitter: 0xTrashPirate](https://img.shields.io/badge/@0xTrashPirate-black?style=for-the-badge&logo=X)](https://twitter.com/0xTrashPirate)
 
 
 ## About
-Project Description
+Collection of modular NFT Contracts based on the ERC721A standards. The modules include:
+
+**Base contract**  
+- NFTBasic: Basic NFT contract with minting and transfer functions including a max wallet size (default: 10), batch limit (default: 10), royalties, and withdraw functions for ETH and ERC20 tokens.
+
+**Utilitites**  
+- Pausable: Pausable NFT contract extension with pause and unpause functions.
+
+**Extensions**  
+- FeeHandler: Extension to handle fees for minting in native coins and ERC20 tokens.
+- PseudoRandomized: Extension to handle pseudo-randomized minting
+- Whitelist: Extension to handle whitelisted minting
 
 ## Installation
 
@@ -24,17 +35,36 @@ $ make install
 Before running any commands, create a .env file and add the following environment variables:
 
 ```bash
+# NFT configurations
+COLLECTION_NAME=<"collection name">
+SYMBOL=<"nft sybmol">
+BASE_URI="base uri" # ipfs://<cid>
+CONTRACT_URI="contract uri" # ipfs://<cid>
+MAX_SUPPLY=<"maximum number of nfts">
+ETH_FEE=<"minting fee in native token"> # in wei
+TOKEN_FEE=<"minting in erc20 token"> # in wei
+
+OWNER_ADDRESS=<"owner address">
+FEE_ADDRESS=<"address for minting fees">
+TOKEN_ADDRESS=<"token address">
+
+# anvil wallets
+ANVIL_DEFAULT_ACCOUNT=<"default account address">
+ANVIL_DEFAULT_KEY=<"default account private key">
+
+# accounts to deploy/interact with contracts
+ACCOUNT_NAME=<"account name">
+ACCOUNT_ADDRESS=<"account address">
+
 # network configs
 RPC_LOCALHOST="http://127.0.0.1:8545"
 
 # ethereum nework
-RPC_TEST=<rpc url>
-RPC_MAIN=<rpc url>
-ETHERSCAN_KEY=<api key>
+RPC_TEST=<"rpc url">
+RPC_MAIN=<"rpc url">
+ETHERSCAN_KEY=<"api key">
 
-# accounts to deploy/interact with contracts
-ACCOUNT_NAME="account name"
-ACCOUNT_ADDRESS="account address"
+
 ```
 
 Update chain ids in the `HelperConfig.s.sol` file for the chain you want to configure:
@@ -81,7 +111,7 @@ Don't forget to give the project a star! Thanks again!
 👤 **Nadina Oates**
 
 * Website: [nadinaoates.com](https://nadinaoates.com)
-* Twitter: [@N0\_crypto](https://twitter.com/N0\_crypto)
+* Twitter: [@0xTrashPirate](https://twitter.com/0xTrashPirate)
 * Github: [@trashpirate](https://github.com/trashpirate)
 * LinkedIn: [@nadinaoates](https://linkedin.com/in/nadinaoates)
 

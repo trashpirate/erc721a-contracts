@@ -85,3 +85,21 @@ contract BurnNft is Script {
         burnNft(recentContractAddress);
     }
 }
+
+/// TODO
+
+/**
+ * setBatchLimit
+ *
+ * setMaxWalletSize
+ *
+ * withdrawTokens
+ *
+ * withdrawETH
+ *
+ * setBaseURI
+ *
+ * setContractURI
+ *
+ * setRoyalty
+ */

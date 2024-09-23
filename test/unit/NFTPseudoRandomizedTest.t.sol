@@ -69,7 +69,7 @@ contract NFTPseudoRandomizedTest is Test {
         networkConfig = helperConfig.getActiveNetworkConfigStruct();
     }
 
-    function test__unit__batchTokenURI() public {
+    function test__NFTPseudoRandomized__batchTokenURI() public {
         uint256 roll = 2;
         uint256 batchLimit = nftContract.getBatchLimit();
         for (uint256 index = 0; index < 20; index++) {
@@ -85,7 +85,7 @@ contract NFTPseudoRandomizedTest is Test {
     }
 
     /// forge-config: default.fuzz.runs = 3
-    function test__unit__UniqueTokenURI(uint256 roll) public skipFork {
+    function test__NFTPseudoRandomized__UniqueTokenURI(uint256 roll) public skipFork {
         roll = bound(roll, 0, 100000000000);
         TestHelper testHelper = new TestHelper();
 

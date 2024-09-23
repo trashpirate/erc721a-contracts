@@ -8,9 +8,9 @@ import {ERC20Mock} from "@openzeppelin/contracts/mocks/token/ERC20Mock.sol";
 import {NFTContract} from "src/NFTContract.sol";
 import {HelperConfig} from "script/helpers/HelperConfig.s.sol";
 import {DeployNFTContract} from "script/deployment/DeployNFTContract.s.sol";
-import {MintNft, BatchMint, TransferNft, ApproveNft, BurnNft} from "script/interactions/Interactions.s.sol";
+import {MintNft, BatchMint} from "script/interactions/NFTContractInteractions.s.sol";
 
-contract TestInteractions is Test {
+contract NFTContractInteractionsTest is Test {
     /*//////////////////////////////////////////////////////////////
                              CONFIGURATION
     //////////////////////////////////////////////////////////////*/
@@ -76,7 +76,7 @@ contract TestInteractions is Test {
     /*//////////////////////////////////////////////////////////////
                                TEST MINT
     //////////////////////////////////////////////////////////////*/
-    function test__SingleMint() public funded(msg.sender) unpaused {
+    function test__NFTContractInteraction__SingleMint() public funded(msg.sender) unpaused {
         MintNft mintNft = new MintNft();
         mintNft.mintNft(address(nftContract));
         assertEq(nftContract.balanceOf(msg.sender), 1);
@@ -85,7 +85,7 @@ contract TestInteractions is Test {
     /*//////////////////////////////////////////////////////////////
                             TEST BATCH MINT
     //////////////////////////////////////////////////////////////*/
-    function test__BatchMint() public funded(msg.sender) unpaused {
+    function test__NFTContractInteraction__BatchMint() public funded(msg.sender) unpaused {
         BatchMint batchMint = new BatchMint();
         batchMint.batchMint(address(nftContract));
         assertEq(nftContract.balanceOf(msg.sender), nftContract.getBatchLimit());

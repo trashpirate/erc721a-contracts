@@ -55,7 +55,7 @@ contract NFTBasicInteractionTest is Test {
     /*//////////////////////////////////////////////////////////////
                                TEST MINT
     //////////////////////////////////////////////////////////////*/
-    function test__NFTBasic__SingleMint() public {
+    function test__NFTBasicInteraction__SingleMint() public {
         MintNft mintNft = new MintNft();
         mintNft.mintNft(address(nftContract));
         assertEq(nftContract.balanceOf(msg.sender), 1);
@@ -64,7 +64,7 @@ contract NFTBasicInteractionTest is Test {
     /*//////////////////////////////////////////////////////////////
                             TEST BATCH MINT
     //////////////////////////////////////////////////////////////*/
-    function test__NFTBasic__BatchMint() public {
+    function test__NFTBasicInteraction__BatchMint() public {
         BatchMint batchMint = new BatchMint();
         batchMint.batchMint(address(nftContract));
         assertEq(nftContract.balanceOf(msg.sender), nftContract.getBatchLimit());
@@ -73,7 +73,7 @@ contract NFTBasicInteractionTest is Test {
     /*//////////////////////////////////////////////////////////////
                              TEST TRANSFER
     //////////////////////////////////////////////////////////////*/
-    function test__NFTBasic__TransferNft() public {
+    function test__NFTBasicInteraction__TransferNft() public {
         MintNft mintNft = new MintNft();
         mintNft.mintNft(address(nftContract));
         assert(nftContract.balanceOf(msg.sender) == 1);
@@ -86,7 +86,7 @@ contract NFTBasicInteractionTest is Test {
     /*//////////////////////////////////////////////////////////////
                               TEST APPROVE
     //////////////////////////////////////////////////////////////*/
-    function test__NFTBasic__ApproveNft() public {
+    function test__NFTBasicInteraction__ApproveNft() public {
         MintNft mintNft = new MintNft();
         mintNft.mintNft(address(nftContract));
         assertEq(nftContract.balanceOf(msg.sender), 1);
@@ -100,7 +100,7 @@ contract NFTBasicInteractionTest is Test {
     /*//////////////////////////////////////////////////////////////
                                TEST BURN
     //////////////////////////////////////////////////////////////*/
-    function test__NFTBasic__BurnNft() public {
+    function test__NFTBasicInteraction__BurnNft() public {
         MintNft mintNft = new MintNft();
         mintNft.mintNft(address(nftContract));
         assertEq(nftContract.balanceOf(msg.sender), 1);
