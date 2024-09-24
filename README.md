@@ -11,6 +11,9 @@
 
 
 ## About
+
+_**DISCLAIMER: This code is provided as-is and has not been audited for security or functionality. Use at your own risk.**_
+
 Collection of modular NFT Contracts based on the ERC721A standards. The modules include:
 
 **Base contract**  
