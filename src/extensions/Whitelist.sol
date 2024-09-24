@@ -25,17 +25,21 @@ abstract contract Whitelist {
                                  ERRORS
     //////////////////////////////////////////////////////////////*/
     error Whitelist__AlreadyClaimed();
+    error Whitelist__InvalidProof();
 
     /*//////////////////////////////////////////////////////////////
                                MODIFIERS
     //////////////////////////////////////////////////////////////*/
     modifier onlyNotClaimed(address account) {
-        if (!s_hasClaimed[account]) {
+        if (s_hasClaimed[account]) {
             revert Whitelist__AlreadyClaimed();
         }
         _;
     }
 
+    /*//////////////////////////////////////////////////////////////
+                               FUNCTIONS
+    //////////////////////////////////////////////////////////////*/
     constructor(bytes32 merkleRoot) {
         _setMerkleRoot(merkleRoot);
     }

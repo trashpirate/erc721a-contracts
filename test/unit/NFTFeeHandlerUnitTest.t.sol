@@ -87,12 +87,7 @@ contract NFTFeeHandlerUnitTest is Test {
                           TEST   INITIALIZATION
     //////////////////////////////////////////////////////////////*/
     function test__NFTFeeHandler__Initialization() public {
-        assertEq(nftContract.getMaxSupply(), networkConfig.args.maxSupply);
-
         assertEq(nftContract.getFeeAddress(), networkConfig.args.feeAddress);
-        assertEq(nftContract.getBaseURI(), networkConfig.args.baseURI);
-        assertEq(nftContract.contractURI(), networkConfig.args.contractURI);
-
         assertEq(nftContract.getFeeToken(), networkConfig.args.tokenAddress);
 
         assertEq(nftContract.getEthFee(), networkConfig.args.ethFee);
@@ -101,11 +96,31 @@ contract NFTFeeHandlerUnitTest is Test {
         assertEq(nftContract.getMaxWalletSize(), 10);
         assertEq(nftContract.getBatchLimit(), 10);
 
-        assertEq(nftContract.supportsInterface(0x80ac58cd), true); // ERC721
-        assertEq(nftContract.supportsInterface(0x2a55205a), true); // ERC2981
-
         vm.expectRevert(IERC721A.URIQueryForNonexistentToken.selector);
         nftContract.tokenURI(1);
+    }
+
+    /*//////////////////////////////////////////////////////////////
+                            TEST DEPLOYMENT
+    //////////////////////////////////////////////////////////////*/
+    function test__NFTFeeHandler__RevertWhen__ZeroFeeAddress() public {
+        HelperConfig.ConstructorArguments memory args = networkConfig.args;
+
+        args.feeAddress = address(0);
+        //ERC2981InvalidDefaultRoyaltyReceiver
+        vm.expectRevert(FeeHandler.FeeHandler_FeeAddressIsZeroAddress.selector);
+        new NFTFeeHandler(
+            args.name,
+            args.symbol,
+            args.baseURI,
+            args.contractURI,
+            args.owner,
+            args.feeAddress,
+            args.tokenAddress,
+            args.tokenFee,
+            args.ethFee,
+            args.maxSupply
+        );
     }
 
     /*//////////////////////////////////////////////////////////////

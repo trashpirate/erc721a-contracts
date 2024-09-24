@@ -110,15 +110,6 @@ contract NFTBasicUnitTest is Test {
         new NFTBasic(args.name, args.symbol, args.baseURI, args.contractURI, args.owner, args.maxSupply);
     }
 
-    function test__NFTBasic__RevertWhen__ZeroFeeAddress() public {
-        HelperConfig.ConstructorArguments memory args = networkConfig.args;
-
-        args.feeAddress = address(0);
-        //ERC2981InvalidDefaultRoyaltyReceiver
-        // vm.expectRevert();
-        new NFTBasic(args.name, args.symbol, args.baseURI, args.contractURI, args.owner, args.maxSupply);
-    }
-
     /*//////////////////////////////////////////////////////////////
                              TEST ROYALTIES
     //////////////////////////////////////////////////////////////*/

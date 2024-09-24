@@ -33,6 +33,7 @@ contract NFTWhitelistUnitTest is Test {
 
     // get merkle root by running the `generateTree.js` script in ../utils/merkle-tree-generator
     bytes32 MERKLE_ROOT = 0x7cfda1d6c2b32e261fbdf50526b103173ab06cb1879095dddc3d2c5feb96198a;
+    bytes32 NEW_MERKLE_ROOT = 0xbac43dadde51c6caaf0ac2afedd5b01a2309d7949eb885502006523739248f9c;
     bytes32[] PROOF = [
         bytes32(0xfd28eb2cd1dab1d4e95dafc7b249eff8e75eabe37548efb05dada899264f25b4),
         0x603ab331089101552b9dde23779eab62af9b50242bdd77dd16f4dd86fe748129,
@@ -79,6 +80,18 @@ contract NFTWhitelistUnitTest is Test {
     }
 
     /*//////////////////////////////////////////////////////////////
+                            SET MERKLE ROOT
+    //////////////////////////////////////////////////////////////*/
+    function test__NFTWhitelist__SetMerkleRoot() external {
+        address owner = nftContract.owner();
+
+        vm.prank(owner);
+        nftContract.setMerkleRoot(NEW_MERKLE_ROOT);
+
+        assertEq(nftContract.getMerkleRoot(), NEW_MERKLE_ROOT);
+    }
+
+    /*//////////////////////////////////////////////////////////////
                                TEST MINT
     //////////////////////////////////////////////////////////////*/
 
@@ -107,11 +120,23 @@ contract NFTWhitelistUnitTest is Test {
 
     /// REVERTS
     //////////////////////////////////////////////////////////////*/
-    function test__NFTWhitelist__RevertsWhen__InvalidMinter() external {
-        vm.expectRevert(NFTWhitelist.NFTWhitelist__InvalidMinter.selector);
+    function test__NFTWhitelist__RevertsWhen__InvalidProof() external {
+        vm.expectRevert(Whitelist.Whitelist__InvalidProof.selector);
 
         // mint
         vm.prank(USER);
+        nftContract.mint(1, PROOF);
+    }
+
+    function test__NFTWhitelist__RevertsWhen__AlreadyClaimed() external {
+        // mint
+        vm.prank(VALID_USER);
+        nftContract.mint(1, PROOF);
+
+        vm.expectRevert(Whitelist.Whitelist__AlreadyClaimed.selector);
+
+        // mint
+        vm.prank(VALID_USER);
         nftContract.mint(1, PROOF);
     }
 

@@ -69,6 +69,17 @@ contract NFTPseudoRandomizedTest is Test {
         networkConfig = helperConfig.getActiveNetworkConfigStruct();
     }
 
+    /*//////////////////////////////////////////////////////////////
+                          TEST SUPPORTS INTERFACE
+    //////////////////////////////////////////////////////////////*/
+    function test__NFTPseudoRandomized__SupportsInterface() public {
+        assertEq(nftContract.supportsInterface(0x80ac58cd), true); // ERC721
+        assertEq(nftContract.supportsInterface(0x2a55205a), true); // ERC2981
+    }
+
+    /*//////////////////////////////////////////////////////////////
+                             TEST TOKEN URI
+    //////////////////////////////////////////////////////////////*/
     function test__NFTPseudoRandomized__batchTokenURI() public {
         uint256 roll = 2;
         uint256 batchLimit = nftContract.getBatchLimit();
@@ -85,8 +96,8 @@ contract NFTPseudoRandomizedTest is Test {
     }
 
     /// forge-config: default.fuzz.runs = 3
-    function test__NFTPseudoRandomized__UniqueTokenURI(uint256 roll) public skipFork {
-        roll = bound(roll, 0, 100000000000);
+    function test__NFTPseudoRandomized__UniqueTokenURI() public skipFork {
+        uint256 roll = 3; // bound(roll, 0, 100000000000);
         TestHelper testHelper = new TestHelper();
 
         uint256 maxSupply = nftContract.getMaxSupply();

@@ -41,12 +41,16 @@ contract NFTWhitelist is NFTBasic, Whitelist {
 
     /// @notice Mints NFT for a eth and a token fee
     /// @param quantity number of NFTs to mint
-    function mint(uint256 quantity, bytes32[] calldata merkleProof) external validQuantity(quantity) {
-        if (_verifyClaimer(msg.sender, merkleProof) && !hasClaimed(msg.sender)) {
+    function mint(uint256 quantity, bytes32[] calldata merkleProof)
+        external
+        validQuantity(quantity)
+        onlyNotClaimed(msg.sender)
+    {
+        if (_verifyClaimer(msg.sender, merkleProof)) {
             _setClaimStatus(msg.sender, true);
             _mint(msg.sender, quantity);
         } else {
-            revert NFTWhitelist__InvalidMinter();
+            revert Whitelist__InvalidProof();
         }
     }
 

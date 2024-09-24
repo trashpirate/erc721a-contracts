@@ -135,6 +135,27 @@ contract NFTPausableUnitTest is Test {
         nftContract.pause();
     }
 
+    function test__NFTPausable__RevertsWhen__PauseAlreadyPaused() public {
+        address owner = nftContract.owner();
+
+        vm.expectRevert(Pausable.Pausable_ContractIsPaused.selector);
+
+        vm.prank(owner);
+        nftContract.pause();
+    }
+
+    function test__NFTPausable__RevertsWhen__UnpauseAlreadyUnpaused() public {
+        address owner = nftContract.owner();
+
+        vm.prank(owner);
+        nftContract.unpause();
+
+        vm.expectRevert(Pausable.Pausable_ContractIsUnpaused.selector);
+
+        vm.prank(owner);
+        nftContract.unpause();
+    }
+
     /*//////////////////////////////////////////////////////////////
                                TEST MINT
     //////////////////////////////////////////////////////////////*/
