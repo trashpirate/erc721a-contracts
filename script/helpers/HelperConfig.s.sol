@@ -17,6 +17,7 @@ contract HelperConfig is Script {
         uint256 tokenFee;
         uint256 ethFee;
         uint256 maxSupply;
+        bytes32 merkleRoot;
     }
 
     struct NetworkConfig {
@@ -32,6 +33,8 @@ contract HelperConfig is Script {
     uint256 public ETH_FEE;
     uint256 public TOKEN_FEE;
 
+    bytes32 public MERKLE_ROOT;
+
     // chain configurations
     NetworkConfig public activeNetworkConfig;
 
@@ -43,6 +46,7 @@ contract HelperConfig is Script {
         MAX_SUPPLY = vm.envUint("MAX_SUPPLY");
         ETH_FEE = vm.envUint("ETH_FEE");
         TOKEN_FEE = vm.envUint("TOKEN_FEE");
+        MERKLE_ROOT = vm.envBytes32("MERKLE_ROOT");
 
         console.log("NAME: ", NAME);
         console.log("SYMBOL: ", SYMBOL);
@@ -80,7 +84,8 @@ contract HelperConfig is Script {
                 tokenAddress: vm.envAddress("TOKEN_ADDRESS"),
                 ethFee: ETH_FEE,
                 tokenFee: TOKEN_FEE,
-                maxSupply: MAX_SUPPLY
+                maxSupply: MAX_SUPPLY,
+                merkleRoot: MERKLE_ROOT
             })
         });
     }
@@ -97,7 +102,8 @@ contract HelperConfig is Script {
                 tokenAddress: vm.envAddress("TOKEN_ADDRESS"),
                 ethFee: ETH_FEE,
                 tokenFee: TOKEN_FEE,
-                maxSupply: MAX_SUPPLY
+                maxSupply: MAX_SUPPLY,
+                merkleRoot: MERKLE_ROOT
             })
         });
     }
@@ -119,7 +125,8 @@ contract HelperConfig is Script {
                 tokenAddress: address(token),
                 ethFee: ETH_FEE,
                 tokenFee: TOKEN_FEE,
-                maxSupply: MAX_SUPPLY
+                maxSupply: MAX_SUPPLY,
+                merkleRoot: MERKLE_ROOT
             })
         });
     }

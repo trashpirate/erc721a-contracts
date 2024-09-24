@@ -48,6 +48,9 @@ OWNER_ADDRESS=<"owner address">
 FEE_ADDRESS=<"address for minting fees">
 TOKEN_ADDRESS=<"token address">
 
+MERKLE_ROOT=<"root hash">
+
+
 # anvil wallets
 ANVIL_DEFAULT_ACCOUNT=<"default account address">
 ANVIL_DEFAULT_KEY=<"default account private key">
@@ -78,15 +81,19 @@ Update chain ids in the `HelperConfig.s.sol` file for the chain you want to conf
 $ forge test
 ```
 
-### Deploy contract on testnet
-```bash
-$ make deploy-testnet
-```
+### Generate Merkle tree and proofs
 
-### Deploy contract on mainnet
-```bash
-$ make deploy-mainnet
-```
+1. Navigate to the `utils/merkle-tree-generator` directory
+2. Place the csv file containing the list of whitelist addresses in the `data` directory
+3. Run the following command to generate the merkle tree for whitelist:
+    ```bash
+    $ node generateTree.js <csv_filename>
+    ```
+4. To generate the merkle proof for a specific address run:
+    ```bash
+    $ node generateProof.js <address>
+    ```
+For deployment, paste the merkle root into the `.env` file.
 
 ## Deployments
 

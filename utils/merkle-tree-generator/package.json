@@ -9,7 +9,8 @@
   "license": "MIT",
   "description": "Script to genenerate merkle trees from a list of addresses",
   "dependencies": {
-    "@openzeppelin/merkle-tree": "^1.0.7"
+    "@openzeppelin/merkle-tree": "^1.0.7",
+    "csv-parser": "^3.0.0"
   },
   "type": "module"
 }

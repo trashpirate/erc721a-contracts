@@ -1,23 +1,47 @@
 import { StandardMerkleTree } from "@openzeppelin/merkle-tree";
 import fs from "fs";
+import csv from "csv-parser";
+
+function readCSV(filename) {
+    
+    const results = [];
+    return new Promise((resolve, reject) => {
+        fs.createReadStream(filename)
+        .pipe(csv())
+        .on('data', (row) => {
+            // Extract only the values from the row (object)
+            results.push(Object.values(row));
+        })
+        .on('end', () => {
+            resolve(results); // Array with only values, no labels
+        })
+        .on('error', (error) => {
+                reject(error); // Reject if an error occurs
+            });
+     })
+}
 
 // Main Logic
-function main() {
-    try {
-        // (1)
-        const values = [
-            ["0x1111111111111111111111111111111111111111"],
-            ["0x2222222222222222222222222222222222222222"]
-        ];
+async function main() {
 
-        // (2)
+    var args = process.argv.slice(2);
+    var filename = args[0];
+
+    try {
+
+        // read values from csv file
+        const values = await readCSV('data/'+filename);
+        console.log(values)
+
+        // generate merkle tree
         const tree = StandardMerkleTree.of(values, ["address"]);
 
-        // (3)
+        // show root
         console.log('Merkle Root:', tree.root);
 
-        // (4)
+        // write tree to file
         fs.writeFileSync("tree.json", JSON.stringify(tree.dump()));
+
     } catch (error) {
         console.error("An error occurred:", error.message);
     } finally {

@@ -3,13 +3,16 @@ import fs from "fs";
 
 // Main Logic
 function main() {
+
+    var args = process.argv.slice(2);
+    var account = args[0];
     try {
         // (1)
         const tree = StandardMerkleTree.load(JSON.parse(fs.readFileSync("tree.json", "utf8")));
 
         // (2)
         for (const [i, v] of tree.entries()) {
-            if (v[0] === '0x1111111111111111111111111111111111111111') {
+            if (v[0] === account) {
                 // (3)
                 const proof = tree.getProof(i);
                 console.log('Value:', v);
