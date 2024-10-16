@@ -111,7 +111,7 @@ contract NFTBasic is ERC721A, ERC2981, ERC721ABurnable, Ownable {
     /// @notice Mints NFT
     /// @param quantity number of NFTs to mint
     function mint(uint256 quantity) external payable virtual validQuantity(quantity) {
-        _mint(msg.sender, quantity);
+        _safeMint(msg.sender, quantity);
     }
 
     /// @notice Sets batch limit - maximum number of nfts that can be minted at once (only owner)

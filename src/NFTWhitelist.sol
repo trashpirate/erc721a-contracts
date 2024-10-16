@@ -48,7 +48,7 @@ contract NFTWhitelist is NFTBasic, Whitelist {
     {
         if (_verifyClaimer(msg.sender, merkleProof)) {
             _setClaimStatus(msg.sender, true);
-            _mint(msg.sender, quantity);
+            _safeMint(msg.sender, quantity);
         } else {
             revert Whitelist__InvalidProof();
         }

@@ -1,8 +1,9 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity ^0.8.20;
+pragma solidity 0.8.20;
 
-import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+import {IERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import {ERC721A, IERC721A} from "@erc721a/contracts/ERC721A.sol";
 
 /**
@@ -10,6 +11,8 @@ import {ERC721A, IERC721A} from "@erc721a/contracts/ERC721A.sol";
  *  @notice This contract provides a mechanism to charge fees for minting NFTs.
  */
 abstract contract FeeHandler {
+    using SafeERC20 for IERC20;
+
     /*//////////////////////////////////////////////////////////////
                            STORAGE VARIABLES
     //////////////////////////////////////////////////////////////*/
@@ -24,14 +27,13 @@ abstract contract FeeHandler {
     //////////////////////////////////////////////////////////////*/
     event TokenFeeSet(address indexed sender, uint256 indexed fee);
     event EthFeeSet(address indexed sender, uint256 indexed fee);
-    event FeeAddressSet(address indexed sender, address feeAddress);
+    event FeeAddressSet(address indexed sender, address indexed feeAddress);
 
     /*//////////////////////////////////////////////////////////////
                                  ERRORS
     //////////////////////////////////////////////////////////////*/
     error FeeHandler_FeeAddressIsZeroAddress();
     error FeeHandler_InsufficientEthFee(uint256 value, uint256 fee);
-    error FeeHandler_TokenTransferFailed();
     error FeeHandler_EthTransferFailed();
 
     /*//////////////////////////////////////////////////////////////
@@ -62,8 +64,7 @@ abstract contract FeeHandler {
         uint256 tokenFee = s_tokenFee;
         if (tokenFee > 0) {
             uint256 totalTokenFee = tokenFee * quantity;
-            bool success = i_feeToken.transferFrom(msg.sender, s_feeAddress, totalTokenFee);
-            if (!success) revert FeeHandler_TokenTransferFailed();
+            i_feeToken.safeTransferFrom(msg.sender, s_feeAddress, totalTokenFee);
         }
     }
 

@@ -282,14 +282,10 @@ contract NFTFeeHandlerUnitTest is Test {
         nftContract.mint{value: ethFee}(1);
     }
 
-    function test__NFTFeeHandler__RevertWhen__MintTokenTransferFails(uint256 quantity, address account)
-        public
-        skipFork
-    {
+    function test__NFTFeeHandler__RevertWhen__MintTokenTransferFails(uint256 quantity) public skipFork {
         quantity = bound(quantity, 1, nftContract.getBatchLimit());
-        vm.assume(account != address(0));
 
-        fund(account);
+        fund(USER);
 
         uint256 ethFee = nftContract.getEthFee() * quantity;
         uint256 tokenFee = nftContract.getTokenFee() * quantity;
@@ -298,32 +294,31 @@ contract NFTFeeHandlerUnitTest is Test {
 
         vm.mockCall(
             address(token),
-            abi.encodeWithSelector(token.transferFrom.selector, account, feeAddress, tokenFee),
+            abi.encodeWithSelector(token.transferFrom.selector, USER, feeAddress, tokenFee),
             abi.encode(false)
         );
 
-        vm.expectRevert(FeeHandler.FeeHandler_TokenTransferFailed.selector);
-        vm.prank(account);
+        vm.expectRevert();
+        vm.prank(USER);
         nftContract.mint{value: ethFee}(quantity);
     }
 
-    function test__NFTFeeHandler__RevertWhen__MintEthTransferFails(uint256 quantity, address account) public skipFork {
+    function test__NFTFeeHandler__RevertWhen__MintEthTransferFails(uint256 quantity) public skipFork {
         quantity = bound(quantity, 1, nftContract.getBatchLimit());
-        vm.assume(account != address(0));
 
-        fund(account);
+        fund(USER);
 
         uint256 ethFee = nftContract.getEthFee() * quantity;
         uint256 tokenFee = nftContract.getTokenFee() * quantity;
 
         address feeAddress = nftContract.getFeeAddress();
-        vm.prank(account);
+        vm.prank(USER);
         token.approve(address(nftContract), tokenFee);
 
         vm.mockCallRevert(feeAddress, "", "");
 
         vm.expectRevert(FeeHandler.FeeHandler_EthTransferFailed.selector);
-        vm.prank(account);
+        vm.prank(USER);
         nftContract.mint{value: ethFee}(quantity);
     }
 

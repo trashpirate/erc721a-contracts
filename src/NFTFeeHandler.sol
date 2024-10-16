@@ -47,7 +47,7 @@ contract NFTFeeHandler is NFTBasic, FeeHandler {
     /// @notice Mints NFT for a eth and a token fee
     /// @param quantity number of NFTs to mint
     function mint(uint256 quantity) external payable override validQuantity(quantity) {
-        _mint(msg.sender, quantity);
+        _safeMint(msg.sender, quantity);
 
         _chargeEthFee(quantity);
         _chargeTokenFee(quantity);

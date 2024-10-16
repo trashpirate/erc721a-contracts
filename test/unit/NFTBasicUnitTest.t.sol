@@ -7,6 +7,8 @@ import {IERC721A} from "@erc721a/contracts/IERC721A.sol";
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {ERC20Mock} from "@openzeppelin/contracts/mocks/token/ERC20Mock.sol";
 
+import {ERC721A__IERC721Receiver} from "@erc721a/contracts/ERC721A.sol";
+
 import {DeployNFTBasic} from "script/deployment/DeployNFTBasic.s.sol";
 import {NFTBasic} from "src/NFTBasic.sol";
 import {HelperConfig} from "script/helpers/HelperConfig.s.sol";
@@ -377,39 +379,32 @@ contract NFTBasicUnitTest is Test {
 
     /// SUCCESS
     //////////////////////////////////////////////////////////////*/
-    function test__NFTBasic__Mint(uint256 quantity, address account) public skipFork {
+    function test__NFTBasic__Mint(uint256 quantity) public skipFork {
         quantity = bound(quantity, 1, nftBasic.getBatchLimit());
-        vm.assume(account != address(0));
 
-        vm.prank(account);
+        vm.prank(USER);
         nftBasic.mint(quantity);
 
-        assertEq(nftBasic.balanceOf(account), quantity);
+        assertEq(nftBasic.balanceOf(USER), quantity);
     }
 
-    function test__NFTBasic__MintNoMaxWallet(uint256 quantity, address account)
-        public
-        noMaxWallet
-        noBatchLimit
-        skipFork
-    {
+    function test__NFTBasic__MintNoMaxWallet(uint256 quantity) public noMaxWallet noBatchLimit skipFork {
         quantity = bound(quantity, 1, nftBasic.getMaxSupply());
-        vm.assume(account != address(0));
 
         uint256 batchLimit = nftBasic.getBatchLimit();
 
         if (quantity % batchLimit > 0) {
-            vm.prank(account);
+            vm.prank(USER);
             nftBasic.mint(quantity % batchLimit);
         }
         if (quantity >= batchLimit) {
             for (uint256 index = 0; index < quantity / batchLimit; index++) {
-                vm.prank(account);
+                vm.prank(USER);
                 nftBasic.mint(batchLimit);
             }
         }
 
-        assertEq(nftBasic.balanceOf(account), quantity);
+        assertEq(nftBasic.balanceOf(USER), quantity);
     }
 
     /// EVENT EMITTED
@@ -468,8 +463,8 @@ contract NFTBasicUnitTest is Test {
     //////////////////////////////////////////////////////////////*/
     function test__NFTBasic__Transfer(address account, address receiver) public skipFork {
         uint256 quantity = 1;
-        vm.assume(account != address(0));
-        vm.assume(receiver != address(0));
+        vm.assume(account != address(0) && account.code.length == 0);
+        vm.assume(receiver != address(0) && receiver.code.length == 0);
 
         vm.prank(account);
         nftBasic.mint(quantity);

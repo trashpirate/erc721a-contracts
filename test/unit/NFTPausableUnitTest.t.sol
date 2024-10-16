@@ -162,14 +162,13 @@ contract NFTPausableUnitTest is Test {
 
     /// SUCCESS
     //////////////////////////////////////////////////////////////*/
-    function test__NFTPausable__Mint(uint256 quantity, address account) public unpaused {
+    function test__NFTPausable__Mint(uint256 quantity) public unpaused {
         quantity = bound(quantity, 1, nftContract.getBatchLimit());
-        vm.assume(account != address(0));
 
-        vm.prank(account);
+        vm.prank(USER);
         nftContract.mint(quantity);
 
-        assertEq(nftContract.balanceOf(account), quantity);
+        assertEq(nftContract.balanceOf(USER), quantity);
     }
 
     /// REVERTS

@@ -85,7 +85,7 @@ contract NFTPseudoRandomizedTest is Test {
         uint256 batchLimit = nftContract.getBatchLimit();
         for (uint256 index = 0; index < 20; index++) {
             vm.prevrandao(bytes32(uint256(index + roll)));
-
+            vm.startPrank(USER);
             nftContract.mint(batchLimit);
             vm.stopPrank();
         }

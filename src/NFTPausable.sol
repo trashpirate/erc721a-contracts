@@ -36,7 +36,7 @@ contract NFTPausable is NFTBasic, Pausable {
     /// @notice Mints NFT for a eth and a token fee
     /// @param quantity number of NFTs to mint
     function mint(uint256 quantity) external payable override whenNotPaused validQuantity(quantity) {
-        _mint(msg.sender, quantity);
+        _safeMint(msg.sender, quantity);
     }
 
     /// @notice Pauses contract (only owner)

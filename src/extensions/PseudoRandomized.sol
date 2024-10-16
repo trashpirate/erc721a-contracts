@@ -94,7 +94,7 @@ abstract contract PseudoRandomized is ERC721A {
             }
         }
 
-        super._mint(to, quantity);
+        super._safeMint(to, quantity);
     }
 
     /*//////////////////////////////////////////////////////////////
