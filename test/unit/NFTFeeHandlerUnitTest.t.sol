@@ -41,7 +41,7 @@ contract NFTFeeHandlerUnitTest is Test {
     //////////////////////////////////////////////////////////////*/
     event EthFeeSet(address indexed sender, uint256 indexed fee);
     event TokenFeeSet(address indexed sender, uint256 indexed fee);
-    event FeeAddressSet(address indexed sender, address feeAddress);
+    event FeeAddressSet(address indexed sender, address indexed feeAddress);
 
     /*//////////////////////////////////////////////////////////////
                                  MODIFIERS
