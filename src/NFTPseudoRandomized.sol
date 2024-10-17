@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.20;
+pragma solidity 0.8.20;
 
 import {PseudoRandomized} from "src/extensions/PseudoRandomized.sol";
 import {NFTBasic, ERC721A} from "src/NFTBasic.sol";

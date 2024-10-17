@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.20;
+pragma solidity 0.8.20;
 
 import {FeeHandler} from "src/extensions/FeeHandler.sol";
 import {NFTBasic} from "src/NFTBasic.sol";
