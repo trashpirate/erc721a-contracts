@@ -14,7 +14,7 @@
 
 _**DISCLAIMER: This code is provided as-is and has not been audited for security or functionality. Use at your own risk.**_
 
-Collection of modular NFT Contracts based on the ERC721A standards. The modules include:
+Collection of modular NFT contracts and extensions based on the ERC721 & ERC721A standards. The modules include:
 
 **Base contract**  
 - NFTBasic: Basic NFT contract with minting and transfer functions including a max wallet size (default: 10), batch limit (default: 10), royalties, and withdraw functions for ETH and ERC20 tokens.
