@@ -61,10 +61,9 @@ abstract contract FeeHandler {
     /// @param quantity Number of NFTs to mint
     function _chargeTokenFee(uint256 quantity) internal {
         // pay mint fee in tokens
-        uint256 tokenFee = s_tokenFee;
+        uint256 tokenFee = s_tokenFee * quantity;
         if (tokenFee > 0) {
-            uint256 totalTokenFee = tokenFee * quantity;
-            i_feeToken.safeTransferFrom(msg.sender, s_feeAddress, totalTokenFee);
+            i_feeToken.safeTransferFrom(msg.sender, s_feeAddress, tokenFee);
         }
     }
 
@@ -72,13 +71,12 @@ abstract contract FeeHandler {
     /// @param quantity Number of NFTs to mint
     function _chargeEthFee(uint256 quantity) internal {
         // pay mint fee in ETH
-        uint256 ethFee = s_ethFee;
+        uint256 ethFee = s_ethFee * quantity;
         if (ethFee > 0) {
-            uint256 totalEthFee = ethFee * quantity;
-            if (msg.value < totalEthFee) {
-                revert FeeHandler_InsufficientEthFee(msg.value, totalEthFee);
+            if (msg.value < ethFee) {
+                revert FeeHandler_InsufficientEthFee(msg.value, ethFee);
             }
-            (bool success,) = payable(s_feeAddress).call{value: totalEthFee}("");
+            (bool success,) = payable(s_feeAddress).call{value: ethFee}("");
             if (!success) revert FeeHandler_EthTransferFailed();
         }
     }

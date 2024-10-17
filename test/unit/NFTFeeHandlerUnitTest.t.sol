@@ -222,6 +222,7 @@ contract NFTFeeHandlerUnitTest is Test {
         quantity = bound(quantity, 1, nftContract.getBatchLimit());
         vm.assume(account != address(0));
         vm.assume(account != nftContract.getFeeAddress());
+        vm.assume(account.code.length == 0);
 
         fund(account);
 
