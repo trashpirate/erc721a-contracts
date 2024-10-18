@@ -3,3 +3,5 @@ forge-std/=lib/forge-std/src/
 foundry-devops/=lib/foundry-devops/
 @openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/
 @erc721a/contracts/=lib/ERC721A/contracts/
+@uniswap/v3-core/contracts/=lib/v3-core/contracts/
+@uniswap/v3-periphery/contracts/=lib/v3-periphery/contracts/

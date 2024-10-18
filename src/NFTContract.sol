@@ -72,8 +72,11 @@ contract NFTContract is NFTBasic, Pausable, PseudoRandomized, FeeHandler {
     function mint(uint256 quantity) external payable override whenNotPaused validQuantity(quantity) {
         _mintRandom(msg.sender, quantity);
 
-        _chargeEthFee(quantity);
-        _chargeTokenFee(quantity);
+        uint256 ethFee = getEthFee() * quantity;
+        uint256 tokenFee = getTokenFee() * quantity;
+
+        _chargeEthFee(ethFee);
+        _chargeTokenFee(tokenFee);
     }
 
     /// @notice Pauses contract (only owner)

@@ -20,6 +20,7 @@ abstract contract FeeHandler {
 
     address private s_feeAddress;
     uint256 private s_tokenFee;
+    uint256 private s_relativeTokenFee;
     uint256 private s_ethFee;
 
     /*//////////////////////////////////////////////////////////////
@@ -48,6 +49,7 @@ abstract contract FeeHandler {
         i_feeToken = IERC20(feeToken);
         s_feeAddress = feeAddress;
         s_tokenFee = tokenFee;
+        s_relativeTokenFee = 10;
         s_ethFee = ethFee;
     }
 
@@ -58,20 +60,24 @@ abstract contract FeeHandler {
     //////////////////////////////////////////////////////////////*/
 
     /// @notice Charges the minting fee in tokens
-    /// @param quantity Number of NFTs to mint
-    function _chargeTokenFee(uint256 quantity) internal {
-        // pay mint fee in tokens
-        uint256 tokenFee = s_tokenFee * quantity;
+    /// @param tokenFee Fee in tokens
+    function _chargeTokenFee(uint256 tokenFee) internal {
         if (tokenFee > 0) {
             i_feeToken.safeTransferFrom(msg.sender, s_feeAddress, tokenFee);
         }
     }
 
+    /// @notice Charges the minting fee in tokens
+    /// @param relativeTokenFee Fee in tokens
+    function _chargeRelativeTokenFee(uint256 relativeTokenFee) internal {
+        if (relativeTokenFee > 0) {
+            i_feeToken.safeTransferFrom(msg.sender, s_feeAddress, relativeTokenFee);
+        }
+    }
+
     /// @notice Charges the minting fee in ETH
-    /// @param quantity Number of NFTs to mint
-    function _chargeEthFee(uint256 quantity) internal {
-        // pay mint fee in ETH
-        uint256 ethFee = s_ethFee * quantity;
+    /// @param ethFee Fee in ETH
+    function _chargeEthFee(uint256 ethFee) internal {
         if (ethFee > 0) {
             if (msg.value < ethFee) {
                 revert FeeHandler_InsufficientEthFee(msg.value, ethFee);
@@ -110,22 +116,22 @@ abstract contract FeeHandler {
     //////////////////////////////////////////////////////////////*/
 
     /// @notice Returns minting fee in ETH
-    function getEthFee() external view returns (uint256) {
+    function getEthFee() public view returns (uint256) {
         return s_ethFee;
     }
 
     /// @notice Returns minting fee in ERC20
-    function getTokenFee() external view returns (uint256) {
+    function getTokenFee() public view returns (uint256) {
         return s_tokenFee;
     }
 
     /// @notice Returns fee token address
-    function getFeeToken() external view returns (address) {
+    function getFeeToken() public view returns (address) {
         return address(i_feeToken);
     }
 
     /// @notice Returns address that receives minting fees
-    function getFeeAddress() external view returns (address) {
+    function getFeeAddress() public view returns (address) {
         return s_feeAddress;
     }
 }

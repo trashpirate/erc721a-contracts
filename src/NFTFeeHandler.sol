@@ -49,8 +49,11 @@ contract NFTFeeHandler is NFTBasic, FeeHandler {
     function mint(uint256 quantity) external payable override validQuantity(quantity) {
         _safeMint(msg.sender, quantity);
 
-        _chargeEthFee(quantity);
-        _chargeTokenFee(quantity);
+        uint256 ethFee = getEthFee() * quantity;
+        uint256 tokenFee = getTokenFee() * quantity;
+
+        _chargeEthFee(ethFee);
+        _chargeTokenFee(tokenFee);
     }
 
     /// @notice Sets minting fee in ETH (only owner)

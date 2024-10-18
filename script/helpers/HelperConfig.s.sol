@@ -56,16 +56,13 @@ contract HelperConfig is Script {
         console.log("ETH_FEE: ", ETH_FEE);
         console.log("TOKEN_FEE: ", TOKEN_FEE);
 
-        if (block.chainid == 1 || block.chainid == 8453 || block.chainid == 123) {
+        if (block.chainid == 1 || block.chainid == 123) {
             activeNetworkConfig = getMainnetConfig();
-        } else if (block.chainid == 84532 || block.chainid == 11155111) {
+        } else if (block.chainid == 11155111) {
             activeNetworkConfig = getTestnetConfig();
         } else {
             activeNetworkConfig = getAnvilConfig();
         }
-
-        // bytes memory constructorArgs = abi.encode(activeNetworkConfig);
-        // console.logBytes(constructorArgs);
     }
 
     function getActiveNetworkConfigStruct() public view returns (NetworkConfig memory) {

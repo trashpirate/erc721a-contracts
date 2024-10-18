@@ -72,7 +72,7 @@ contract NFTPseudoRandomizedTest is Test {
     /*//////////////////////////////////////////////////////////////
                           TEST SUPPORTS INTERFACE
     //////////////////////////////////////////////////////////////*/
-    function test__NFTPseudoRandomized__SupportsInterface() public {
+    function test__NFTPseudoRandomized__SupportsInterface() public view {
         assertEq(nftContract.supportsInterface(0x80ac58cd), true); // ERC721
         assertEq(nftContract.supportsInterface(0x2a55205a), true); // ERC2981
     }
